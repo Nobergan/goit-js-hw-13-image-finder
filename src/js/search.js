@@ -4,6 +4,7 @@ import * as basicLightbox from 'basiclightbox';
 import 'basiclightbox/dist/basicLightbox.min.css';
 import { debounce } from 'debounce';
 import ref from './refs';
+import pnotify from './notification';
 
 const API_KEY = '18642153-339199c7f42c73c0db1ceac08';
 
@@ -31,6 +32,10 @@ async function makeRequest() {
       `https://pixabay.com/api/?image_type=photo&orientation=horizontal&q=${requestWord}&page=${page}&per_page=12&key=${API_KEY}`,
     );
 
+    if (requestWord === '') {
+      pnotify.showNotice();
+      return;
+    }
     handleRequest(request);
 
     return request;
@@ -43,6 +48,13 @@ function handleRequest(request) {
   const data = request.data.hits;
   const markup = makeMarkup(data);
   ref.list.insertAdjacentHTML('beforeend', markup);
+  if (markup.length >= 12) {
+    pnotify.showSuccess();
+  } else if (markup.length === 0) {
+    pnotify.showError();
+    ref.btn.classList.add('is-hidden');
+  }
+
   scroll();
 
   openModal();

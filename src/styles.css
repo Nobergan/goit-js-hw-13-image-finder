@@ -181,3 +181,7 @@ input {
   stroke-width: 4px;
   transition: 0.2s;
 }
+
+.is-hidden {
+  visibility: hidden;
+}
